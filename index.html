@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cohandy — Workflow automation for independent contractors</title>
+<meta name="description" content="Cohandy builds software that automates the repetitive parts of independent contract work, so people spend their time on the work that actually needs them.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F6F4EF;
+    --paper-2: #FCFBF8;
+    --ink: #15202B;
+    --ink-soft: #46535F;
+    --ink-faint: #8A949D;
+    --line: #E2DDD3;
+    --signal: #1F9E6B;
+    --signal-soft: #E4F2EB;
+    --max: 1080px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 32px; }
+
+  /* ---- Header ---- */
+  header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(246,244,239,0.82);
+    backdrop-filter: saturate(140%) blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 68px;
+  }
+  .brand {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 22px; letter-spacing: -0.02em;
+    display: flex; align-items: center; gap: 10px;
+    color: var(--ink); text-decoration: none;
+  }
+  .brand .mark {
+    width: 26px; height: 26px; border-radius: 7px;
+    background: var(--ink); position: relative; flex: none;
+  }
+  .brand .mark::after {
+    content: ""; position: absolute; inset: 0;
+    background:
+      linear-gradient(var(--signal),var(--signal)) no-repeat;
+    background-size: 9px 2.5px;
+    background-position: 8.5px 15px;
+    transform: rotate(0deg);
+  }
+  .brand .mark::before {
+    content: ""; position: absolute;
+    width: 2.5px; height: 9px; background: var(--signal);
+    left: 11.75px; top: 8.5px;
+  }
+  .nav-mail {
+    font-size: 15px; color: var(--ink-soft); text-decoration: none;
+    font-weight: 500; padding: 8px 16px; border: 1px solid var(--line);
+    border-radius: 999px; transition: border-color .2s, color .2s;
+  }
+  .nav-mail:hover { border-color: var(--ink); color: var(--ink); }
+
+  /* ---- Hero ---- */
+  .hero { padding: 92px 0 76px; }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--signal); font-weight: 600; margin-bottom: 26px;
+  }
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(38px, 6vw, 62px);
+    line-height: 1.04; letter-spacing: -0.035em; font-weight: 700;
+    max-width: 16ch;
+  }
+  h1 em { font-style: normal; color: var(--signal); }
+  .lede {
+    font-size: clamp(17px, 2.2vw, 20px);
+    color: var(--ink-soft); max-width: 52ch; margin-top: 26px;
+  }
+
+  /* ---- Task strip (signature) ---- */
+  .demo {
+    margin-top: 52px;
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 10px;
+    box-shadow: 0 1px 0 rgba(21,32,43,0.02), 0 18px 40px -28px rgba(21,32,43,0.25);
+  }
+  .demo-bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px 14px; border-bottom: 1px solid var(--line);
+    margin-bottom: 8px;
+  }
+  .demo-bar .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+  .demo-bar .title {
+    font-family: 'JetBrains Mono', monospace; font-size: 12.5px;
+    color: var(--ink-faint); margin-left: 6px; letter-spacing: .02em;
+  }
+  .task {
+    display: grid; grid-template-columns: 26px 1fr auto;
+    align-items: center; gap: 14px;
+    padding: 15px 16px; border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 14px;
+  }
+  .task + .task { margin-top: 2px; }
+  .task .check {
+    width: 20px; height: 20px; border-radius: 6px;
+    border: 1.8px solid var(--ink-faint);
+    display: grid; place-items: center;
+    transition: background .35s, border-color .35s;
+  }
+  .task .check svg { width: 11px; height: 11px; opacity: 0; transform: scale(.5); transition: opacity .3s .05s, transform .3s .05s; }
+  .task .label { color: var(--ink-soft); transition: color .35s; }
+  .task .status {
+    font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--ink-faint); transition: color .35s;
+  }
+  .task.done { background: var(--signal-soft); }
+  .task.done .check { background: var(--signal); border-color: var(--signal); }
+  .task.done .check svg { opacity: 1; transform: scale(1); }
+  .task.done .check svg path { stroke: #fff; }
+  .task.done .label { color: var(--ink); }
+  .task.done .status { color: var(--signal); }
+
+  /* ---- Section scaffolding ---- */
+  section.block { padding: 78px 0; border-top: 1px solid var(--line); }
+  .sec-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-faint); font-weight: 600; margin-bottom: 18px;
+  }
+  h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(26px, 3.4vw, 36px); line-height: 1.1;
+    letter-spacing: -0.03em; font-weight: 700; max-width: 20ch;
+  }
+  .block p.body { color: var(--ink-soft); max-width: 60ch; margin-top: 20px; font-size: 18px; }
+
+  /* ---- How it works ---- */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 44px; }
+  .step { }
+  .step .n {
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    color: var(--signal); font-weight: 600; letter-spacing: .1em;
+    padding-bottom: 14px; margin-bottom: 16px;
+    border-bottom: 1px solid var(--line); display: block;
+  }
+  .step h3 {
+    font-family: 'Space Grotesk', sans-serif; font-size: 19px;
+    letter-spacing: -0.01em; font-weight: 600; margin-bottom: 8px;
+  }
+  .step p { color: var(--ink-soft); font-size: 15.5px; }
+
+  /* ---- Detail rows ---- */
+  .rows { margin-top: 40px; border-top: 1px solid var(--line); }
+  .row {
+    display: grid; grid-template-columns: 200px 1fr; gap: 28px;
+    padding: 26px 0; border-bottom: 1px solid var(--line);
+  }
+  .row .k {
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    letter-spacing: .04em; color: var(--ink); font-weight: 600;
+    text-transform: uppercase;
+  }
+  .row .v { color: var(--ink-soft); font-size: 16px; max-width: 60ch; }
+
+  /* ---- Contact ---- */
+  .contact { text-align: left; }
+  .contact-card {
+    margin-top: 34px; background: var(--paper-2);
+    border: 1px solid var(--line); border-radius: 16px;
+    padding: 38px; display: flex; flex-wrap: wrap; gap: 28px;
+    align-items: center; justify-content: space-between;
+  }
+  .contact-card .who { }
+  .contact-card .legal {
+    font-family: 'JetBrains Mono', monospace; font-size: 12.5px;
+    color: var(--ink-faint); letter-spacing: .03em; margin-top: 6px;
+  }
+  .mail-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--ink); color: var(--paper-2);
+    text-decoration: none; font-weight: 600; font-size: 16px;
+    padding: 14px 24px; border-radius: 999px;
+    transition: transform .15s, background .2s;
+  }
+  .mail-btn:hover { transform: translateY(-1px); background: #0d1820; }
+  .mail-btn svg { width: 17px; height: 17px; }
+
+  /* ---- Footer ---- */
+  footer {
+    border-top: 1px solid var(--line); padding: 34px 0 48px;
+    display: flex; flex-wrap: wrap; gap: 10px 24px;
+    align-items: center; justify-content: space-between;
+    font-size: 14px; color: var(--ink-faint);
+  }
+  footer .brand-sm { font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--ink-soft); letter-spacing: -0.01em; }
+
+  @media (max-width: 760px) {
+    .wrap { padding: 0 22px; }
+    .steps { grid-template-columns: 1fr; gap: 30px; }
+    .row { grid-template-columns: 1fr; gap: 8px; }
+    .hero { padding: 64px 0 56px; }
+    .task .status { display: none; }
+    .contact-card { padding: 28px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+    .task.done .check svg { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a href="#" class="brand"><span class="mark"></span>Cohandy</a>
+    <a href="mailto:hello@cohandy.com" class="nav-mail">Contact</a>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <div class="eyebrow">Workflow automation</div>
+    <h1>The busywork handles <em>itself</em>.</h1>
+    <p class="lede">Cohandy is software that automates the repetitive, mechanical parts of independent contract work — so the people doing the work spend their time on the parts that actually need a person.</p>
+
+    <div class="demo" aria-hidden="true">
+      <div class="demo-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="title">cohandy · task queue</span>
+      </div>
+      <div class="task" data-i="0">
+        <span class="check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6.2 4.6 9 10 3" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="label">Format and stage record #4471</span>
+        <span class="status">pending</span>
+      </div>
+      <div class="task" data-i="1">
+        <span class="check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6.2 4.6 9 10 3" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="label">Format and stage record #4472</span>
+        <span class="status">pending</span>
+      </div>
+      <div class="task" data-i="2">
+        <span class="check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6.2 4.6 9 10 3" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="label">Format and stage record #4473</span>
+        <span class="status">pending</span>
+      </div>
+      <div class="task" data-i="3">
+        <span class="check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6.2 4.6 9 10 3" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="label">Format and stage record #4474</span>
+        <span class="status">pending</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="sec-eyebrow">What it is</div>
+    <h2>A tool for the parts of the job that repeat.</h2>
+    <p class="body">Independent contractors lose hours every week to the same mechanical steps — reformatting, staging, checking, and submitting work in the same shape over and over. Cohandy takes those defined, repetitive steps off their plate and runs them reliably, leaving the judgment and the substance to the person. It's billed as a simple weekly subscription per user.</p>
+  </section>
+
+  <section class="block">
+    <div class="sec-eyebrow">How it works</div>
+    <h2>Three steps, then it runs in the background.</h2>
+    <div class="steps">
+      <div class="step">
+        <span class="n">STEP 01</span>
+        <h3>Connect</h3>
+        <p>A contractor sets up Cohandy once against the routine workflow they want handled.</p>
+      </div>
+      <div class="step">
+        <span class="n">STEP 02</span>
+        <h3>Automate</h3>
+        <p>Cohandy runs the repetitive, rule-based steps of that workflow on their behalf.</p>
+      </div>
+      <div class="step">
+        <span class="n">STEP 03</span>
+        <h3>Review</h3>
+        <p>The person stays in control — reviewing output and keeping the work that needs them.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="sec-eyebrow">The details</div>
+    <h2>How billing and access work.</h2>
+    <div class="rows">
+      <div class="row">
+        <div class="k">Who it's for</div>
+        <div class="v">Independent contractors and small teams who handle high volumes of repetitive, defined tasks as part of their work.</div>
+      </div>
+      <div class="row">
+        <div class="k">Pricing</div>
+        <div class="v">A recurring subscription, billed weekly per user. Each invoice is sent for review before payment.</div>
+      </div>
+      <div class="row">
+        <div class="k">Billing</div>
+        <div class="v">Invoices are emailed securely. Payment is by card or bank transfer through a hosted, encrypted checkout.</div>
+      </div>
+      <div class="row">
+        <div class="k">Support</div>
+        <div class="v">Direct email support for setup, billing questions, and day-to-day help.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block contact" id="contact">
+    <div class="sec-eyebrow">Get in touch</div>
+    <h2>Questions about the service or your invoice?</h2>
+    <div class="contact-card">
+      <div class="who">
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:20px;letter-spacing:-0.01em;">Cohandy</div>
+        <div class="legal">Operated by Bradley William Co · Hacienda Heights, CA</div>
+      </div>
+      <a href="mailto:hello@cohandy.com" class="mail-btn">
+        <svg viewBox="0 0 20 20" fill="none"><rect x="2.5" y="4.5" width="15" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="m3.5 5.5 6.5 5 6.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        hello@cohandy.com
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <span class="brand-sm">Cohandy</span>
+  <span>© <span id="yr"></span> Bradley William Co. All rights reserved.</span>
+</footer>
+
+<script>
+  // Signature: tasks resolve themselves one by one, then reset — the "busywork handling itself"
+  (function () {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const tasks = Array.from(document.querySelectorAll('.task'));
+    document.getElementById('yr').textContent = new Date().getFullYear();
+    if (reduce || !tasks.length) { tasks.forEach(t => { t.classList.add('done'); t.querySelector('.status').textContent = 'done'; }); return; }
+
+    let i = 0;
+    function cycle() {
+      const t = tasks[i % tasks.length];
+      if (i % tasks.length === 0) {
+        // reset all at the top of a loop
+        tasks.forEach(x => { x.classList.remove('done'); x.querySelector('.status').textContent = 'pending'; });
+      }
+      setTimeout(() => {
+        t.classList.add('done');
+        t.querySelector('.status').textContent = 'done';
+      }, 120);
+      i++;
+      setTimeout(cycle, i % tasks.length === 0 ? 1600 : 850);
+    }
+    setTimeout(cycle, 600);
+  })();
+</script>
+
+</body>
+</html>
